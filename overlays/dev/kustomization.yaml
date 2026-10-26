@@ -1,0 +1,27 @@
+# Ambiente dev: el clúster kind del laboratorio. Argo CD lo sincroniza solo (application-dev.yaml).
+#
+# Los digest los escribe el job `promote` del CI del repo app en un PR "deploy(dev): ..." después de
+# que pasan todos los quality gates. Rollback = revertir ese PR.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  # kind tiene un solo nodo: techo de 3 réplicas (en la base son 6).
+  - target: { kind: HorizontalPodAutoscaler, name: ffa-api }
+    patch: |-
+      - op: replace
+        path: /spec/maxReplicas
+        value: 3
+
+# Imágenes por DIGEST, nunca por tag: un tag se puede mover, un digest no.
+# Los ceros son el valor inicial: el primer push a main del repo app abre el PR con los digest reales.
+images:
+  - name: feathersforall-api
+    newName: ghcr.io/erolayer-cl/feathersforall-api
+    digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+  - name: feathersforall-web
+    newName: ghcr.io/erolayer-cl/feathersforall-web
+    digest: sha256:0000000000000000000000000000000000000000000000000000000000000000

@@ -1,0 +1,24 @@
+# Base de FeathersForAll: lo común a todos los ambientes. Viene de k8s/ del repo app (S07, ADR 0006).
+# Las imágenes NO se fijan aquí: cada overlay las fija por digest (las escribe CI en dev; en prod, un PR aprobado).
+#
+# Reparto de responsabilidades (igual que en S07):
+#   - Terraform (repo app, terraform/): namespace, cuotas y Secrets ffa-api-secrets / ffa-jobs-secrets
+#   - Este repo: Deployments, Services, Ingress, ConfigMap, HPA, PDB y CronJob, aplicados por Argo CD
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: feathersforall
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: feathersforall
+    includeSelectors: false
+
+resources:
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - hpa.yaml
+  - pdb.yaml
+  - cronjob-purga.yaml        # retención de conversaciones del tutor (ADR 0008)

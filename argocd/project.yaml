@@ -1,0 +1,20 @@
+# Proyecto de Argo CD: acota qué puede desplegar FeathersForAll y dónde.
+#   - Solo desde este repo y solo al namespace feathersforall del clúster donde corre Argo CD.
+#   - Ningún recurso de clúster (Namespace, CRD, ClusterRole…): eso es de Terraform o del admin.
+#   - Nunca Secrets: los crea Terraform y no deben vivir en Git.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: feathersforall
+  namespace: argocd
+spec:
+  description: FeathersForAll (Taller de Ingeniería de Software 2026)
+  sourceRepos:
+    - https://github.com/Erolayer-Cl/feathersforall-gitops.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: feathersforall
+  clusterResourceWhitelist: []
+  namespaceResourceBlacklist:
+    - group: ""
+      kind: Secret

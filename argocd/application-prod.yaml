@@ -1,0 +1,21 @@
+# prod: lista para cuando exista un clúster de producción. Sincronización MANUAL a propósito:
+# la aprobación humana ya ocurrió en el PR, y el botón "Sync" deja un registro más en Argo CD.
+# Cambiar `server` por el clúster real (argocd cluster add <contexto>) antes de aplicarla.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: feathersforall-prod
+  namespace: argocd
+spec:
+  project: feathersforall
+  source:
+    repoURL: https://github.com/Erolayer-Cl/feathersforall-gitops.git
+    targetRevision: main
+    path: overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: feathersforall
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=false
+      - PruneLast=true

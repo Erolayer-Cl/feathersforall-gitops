@@ -1,0 +1,31 @@
+# Ambiente prod. Todavía no hay clúster de producción: application-prod.yaml queda listo con sync MANUAL.
+#
+# Los digest llegan con el workflow `promote-prod` del repo app (Actions → promote-prod → Run workflow):
+# copia los digest que ya están en dev y abre un PR. Ese workflow usa el Environment `production`,
+# que exige aprobación humana, y el PR necesita 2 revisores (protección de rama de este repo).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  # Fuera las banderas que solo sirven en el laboratorio: en prod el chat exige token
+  # y no existen las rutas /v1/dev/courses (null = borrar la clave del ConfigMap).
+  - target: { kind: ConfigMap, name: ffa-api-config }
+    patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: ffa-api-config
+      data:
+        ENABLE_DEV_ROUTES: null
+        CHAT_REQUIRE_AUTH: null
+
+images:
+  - name: feathersforall-api
+    newName: ghcr.io/erolayer-cl/feathersforall-api
+    digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+  - name: feathersforall-web
+    newName: ghcr.io/erolayer-cl/feathersforall-web
+    digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
