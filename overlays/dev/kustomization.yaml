@@ -21,7 +21,7 @@ patches:
 images:
   - name: feathersforall-api
     newName: ghcr.io/erolayer-cl/feathersforall-api
-    digest: sha256:33a9e3d026e6a6c3522ac84a4c466fcb41c62c6c20930951c7dc7fd18aaca5a4
+    digest: sha256:be567172160d5e6dcd1cd4f97c6ade0c4d65fb48fc7d62bef4999a866e5956f8
   - name: feathersforall-web
     newName: ghcr.io/erolayer-cl/feathersforall-web
-    digest: sha256:2bcb9e39a34a4647dbc88228e945490472777767b16e25137a1e8de5fddd3795
+    digest: sha256:71d1ddeb535335594cd16a09a264992901477217f41027d9d9ae1a805c8c94b7
