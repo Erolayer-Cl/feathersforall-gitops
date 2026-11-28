@@ -22,3 +22,4 @@ resources:
   - hpa.yaml
   - pdb.yaml
   - cronjob-purga.yaml        # retención de conversaciones del tutor (ADR 0008)
+  - networkpolicy.yaml        # todo cerrado por defecto; solo Ingress → app y app → DNS, BD y Ollama (S10)
