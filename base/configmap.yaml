@@ -9,6 +9,9 @@ metadata:
 data:
   NODE_ENV: "production"
   PORT: "8080"
+  # La API está detrás del Ingress (1 salto): así req.ip es la IP real del cliente y el freno del login por IP funciona.
+  # Sin esto, todos los usuarios comparten la IP del Ingress y 50 claves malas en 15 min bloquean el login de todos.
+  TRUST_PROXY: "1"
   LOG_LEVEL: "info"
   # Ollama corre en el PC (fuera del clúster): los modelos pesan ~3 GB y necesitan la GPU/RAM del host.
   # host.docker.internal = el PC, visto desde los contenedores de Docker Desktop.
@@ -26,7 +29,5 @@ data:
   # Chat sin token → colegio y curso demo (90_seed_demo.sql).
   DEFAULT_TENANT_ID: "11111111-1111-1111-1111-111111111111"
   DEFAULT_COURSE_ID: "c0000000-0000-0000-0000-000000000001"
-  # SOLO en el clúster local del laboratorio: el frontend aún no tiene login.
-  # En un ambiente real se eliminan estas dos líneas (por defecto: chat con token y sin rutas /v1/dev/courses).
-  ENABLE_DEV_ROUTES: "true"
-  CHAT_REQUIRE_AUTH: "false"
+  # Sin ENABLE_DEV_ROUTES ni CHAT_REQUIRE_AUTH: con NODE_ENV=production la API no expone /v1/dev/courses y el
+  # chat exige token (JWT). El portal ya tiene login; igual que k8s/configmap.yaml del repo de la aplicación.
